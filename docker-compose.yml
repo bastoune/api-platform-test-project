@@ -1,0 +1,52 @@
+version:  '3.7'
+
+services:
+
+  postgres:
+    container_name: apiplatform_issue_test-project_postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: db
+    volumes:
+      - './docker/postgres/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/'
+
+  # HTTP LOAD BALANCER
+  nginx_lb:
+    container_name: apiplatform_issue_test-project_nginx_lb
+    image: nginx:1.17-alpine
+    volumes:
+      - '${DOCKER_FILES_PATH}/nginx_lb/proxy_params:/etc/nginx/proxy_params'
+      - '${DOCKER_FILES_PATH}/nginx_lb/nginx.conf:/etc/nginx/nginx.conf'
+      - '${DOCKER_FILES_PATH}/nginx_lb/sites-available:/etc/nginx/sites-available'
+      - '${DOCKER_FILES_PATH}/nginx_lb/conf.d:/etc/nginx/conf.d'
+      - '${APP_PATH}/public:/var/www/app/public'
+      - './logs/nginx_lb:/var/log'
+    ports:
+      - '${NGINX_LB_PORT_HTTP}:80'
+      - '${NGINX_LB_PORT_HTTPS}:443'
+    depends_on:
+      - app
+
+  # PHP FPM APP
+  app:
+    container_name: apiplatform_issue_test-project_app
+    build:
+      context: ${DOCKER_FILES_PATH}/php_fpm/
+      args:
+        - XDEBUG_REMOTE_PORT=${XDEBUG_PRIVATE_REMOTE_PORT}
+        - XDEBUG_REMOTE_HOST=${XDEBUG_PRIVATE_REMOTE_HOST}
+        - XDEBUG_REMOTE_CONNECT_BACK=${XDEBUG_PRIVATE_REMOTE_CONNECT_BACK}
+    volumes:
+      - '${APP_PATH}:/var/www/app'
+      - '${DOCKER_FILES_PATH}/php_fpm/php_over.ini:/usr/local/etc/php/php_over.ini'
+      - ./logs/app:/var/log
+    environment: # dynamic env vars
+      - COMPOSER_MEMORY_LIMIT=-1
+      - APP_ENV=${APP_ENV}
+      - APP_SECRET=${APP_SECRET}
+    working_dir: /var/www/app
+    command: sh -c "composer install && php-fpm"
+    depends_on:
+      - postgres
