@@ -7,8 +7,10 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use DateTimeInterface;
 
 /**
+ * @ApiResource()
  * @ORM\Table(name="`user`")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  *
@@ -30,11 +32,22 @@ class User implements UserInterface
     private $email;
 
     /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    private $username;
+
+    /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
     private $password;
 
+    /**
+     * @var DateTimeInterface|null
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $sampleNullableDate = null;
 
     public function getId()
     {
@@ -54,13 +67,19 @@ class User implements UserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
+     * @return string
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return $this->username;
+    }
+
+    /**
+     * @param string $username
+     */
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
     }
 
     /**
@@ -96,5 +115,23 @@ class User implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getSampleNullableDate(): ?DateTimeInterface
+    {
+        return $this->sampleNullableDate;
+    }
+
+    /**
+     * @param DateTimeInterface|null $sampleNullableDate
+     */
+    public function setSampleNullableDate(?DateTimeInterface $sampleNullableDate): void
+    {
+        $this->sampleNullableDate = $sampleNullableDate;
     }
 }

@@ -41,7 +41,6 @@ services:
     volumes:
       - '${APP_PATH}:/var/www/app'
       - '${DOCKER_FILES_PATH}/php_fpm/php_over.ini:/usr/local/etc/php/php_over.ini'
-      - ./logs/app:/var/log
     environment: # dynamic env vars
       - COMPOSER_MEMORY_LIMIT=-1
       - APP_ENV=${APP_ENV}

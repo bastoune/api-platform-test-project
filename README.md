@@ -12,3 +12,6 @@
 ### Step 2 - Init
 - `docker-compose up -d`
 - `docker-compose exec app php bin/console doctrine:schema:update --force`
+- `docker-compose exec app php bin/console doctrine:fixtures:load --no-interaction`
+
+### Step 3

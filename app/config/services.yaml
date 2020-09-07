@@ -25,3 +25,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+
+    # Modify the Extracted Types - https://api-platform.com/docs/core/graphql/#modify-the-extracted-types
+    App\GraphQl\Type\TypeConverter:
+        decorates: api_platform.graphql.type_converter

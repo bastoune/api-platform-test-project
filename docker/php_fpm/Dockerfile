@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:7.4-fpm-alpine
 
 # OS DEPENDENCIES
 RUN apk update
@@ -12,7 +12,6 @@ RUN docker-php-source delete
 RUN docker-php-ext-install -j$(nproc) pgsql
 RUN docker-php-ext-install -j$(nproc) pdo_pgsql
 RUN docker-php-ext-install soap intl zip
-RUN docker-php-ext-install opcache
 
 # XDEBUG CONFIGURATION
 ARG XDEBUG_REMOTE_HOST
