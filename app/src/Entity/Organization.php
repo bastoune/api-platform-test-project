@@ -11,28 +11,32 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
- *
+ * @ApiResource(
+ *     graphql={
+ *         "item_query"={"normalization_context"={"groups"={"Organization:read"}}},
+ *         "collection_query"={"normalization_context"={"groups"={"Organization:read"}}},
+ *     }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\OrganizationRepository")
  */
 class Organization
 {
     /**
      * @ORM\Id()
-     * @Groups({"Organization:read"})
+     * @Groups({"User:read"})
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(name="id", type="guid", unique=true)
      */
     private $id;
 
     /**
-     * @Groups({"Organization:read", "User:read:item"})
+     * @Groups({"User:read"})
      * @ORM\Column(type="string", length=255, unique=true)
      */
     private $name;
 
     /**
      * @var Collection $users
-     * @Groups({"Organization:read:item"})
      * @ApiSubresource
      * @ORM\OneToMany(targetEntity="User", mappedBy="organization")
      */
